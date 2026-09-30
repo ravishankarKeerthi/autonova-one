@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonova ERP — Autonomous Operations ERP</title>
+<style>
+:root{
+ --bg:#f5f7fb;--panel:#fff;--text:#172033;--muted:#6b7280;--line:#e5e7eb;
+ --nav:#18212f;--nav2:#111827;--accent:#4f46e5;--accent2:#7c3aed;
+ --green:#059669;--orange:#d97706;--red:#dc2626;--blue:#2563eb;
+ --shadow:0 8px 24px rgba(15,23,42,.07);--radius:12px;
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{display:flex;min-height:100vh}.sidebar{width:245px;background:var(--nav);color:#dbe4ef;position:fixed;left:0;top:0;bottom:0;overflow:auto}
+.brand{padding:20px 18px;border-bottom:1px solid #2d3748;font-weight:800;font-size:18px}.brand span{color:#8b9cff}
+.subbrand{font-size:10px;color:#94a3b8;font-weight:600;letter-spacing:1px;margin-top:4px}
+.navgroup{padding:16px 10px 4px;color:#8190a5;font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.navitem{padding:9px 14px;margin:2px 8px;border-radius:8px;cursor:pointer;font-size:13px}.navitem:hover,.navitem.active{background:#2b3648;color:white}
+.main{margin-left:245px;width:calc(100% - 245px)}.topbar{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:5}
+.search{background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:9px 13px;width:320px;outline:none}.user{display:flex;align-items:center;gap:10px;font-size:13px}
+.avatar{width:32px;height:32px;border-radius:50%;background:#e0e7ff;color:#4338ca;display:grid;place-items:center;font-weight:700}
+.content{padding:24px;max-width:1600px;margin:auto}.pagehead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+h1{font-size:24px;margin:0 0 5px}.subtitle{font-size:13px;color:var(--muted)}
+.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 14px;cursor:pointer;font-weight:600;font-size:12px}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.green{background:#ecfdf5;color:#047857;border-color:#a7f3d0}.btn + .btn{margin-left:7px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
+.kpi .label{font-size:11px;color:var(--muted)}.kpi .value{font-size:24px;font-weight:800;margin:7px 0 3px}.trend{font-size:11px;color:var(--green)}
+.grid{display:grid;grid-template-columns:1.35fr .85fr;gap:16px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.cardhead{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.cardhead strong{font-size:14px}.cardbody{padding:15px 17px}
+table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;color:#6b7280;font-size:10px;text-transform:uppercase;letter-spacing:.4px;background:#f8fafc}th,td{padding:11px;border-bottom:1px solid #eef0f3}tr.clickable{cursor:pointer}tr.clickable:hover{background:#f8fafc}
+.badge{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:700}.b-green{background:#ecfdf5;color:#047857}.b-blue{background:#eff6ff;color:#1d4ed8}.b-orange{background:#fff7ed;color:#c2410c}.b-red{background:#fef2f2;color:#b91c1c}.b-gray{background:#f3f4f6;color:#4b5563}
+.progress{height:7px;background:#eef2f7;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:99px}
+.chart{height:160px;display:flex;align-items:flex-end;gap:9px;padding:12px 5px 0}.bar{flex:1;background:#c7d2fe;border-radius:5px 5px 0 0;position:relative}.bar span{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:#6b7280}
+.alert{padding:11px;border-radius:8px;margin-bottom:8px;font-size:11px}.alert strong{display:block;margin-bottom:3px}.alert.red{background:#fff1f2}.alert.orange{background:#fff7ed}.alert.blue{background:#eff6ff}
+.modulegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.module{background:#fff;border:1px solid var(--line);padding:17px;border-radius:12px;cursor:pointer;box-shadow:var(--shadow)}.module:hover{transform:translateY(-1px);border-color:#c7d2fe}.module .ico{font-size:24px}.module h3{font-size:14px;margin:10px 0 5px}.module p{font-size:11px;color:var(--muted);line-height:1.45;margin:0}.count{font-size:11px;color:#4f46e5;font-weight:700;margin-top:10px}
+.toolbar{display:flex;gap:8px;margin-bottom:13px;align-items:center}.filter{padding:9px;border:1px solid var(--line);background:white;border-radius:8px;font-size:12px}.spacer{flex:1}
+.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.field label{display:block;font-size:10px;text-transform:uppercase;color:#6b7280;margin-bottom:5px;font-weight:700}.field input,.field select,.field textarea{width:100%;padding:9px;border:1px solid #dbe1e8;border-radius:7px;font-size:12px;background:#fff}.field textarea{min-height:75px}.section{margin:18px 0 10px;font-size:12px;font-weight:800;color:#374151;border-bottom:1px solid var(--line);padding-bottom:8px}.smartbuttons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.smart{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:11px;cursor:pointer}.smart b{font-size:15px;margin-right:5px;color:#4f46e5}
+.timeline{border-left:2px solid #e5e7eb;margin-left:7px;padding-left:18px}.event{position:relative;margin-bottom:17px;font-size:11px}.event:before{content:'';position:absolute;left:-24px;top:2px;width:8px;height:8px;border-radius:50%;background:#6366f1}.event strong{display:block;font-size:12px}.event span{color:#6b7280}
+.modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.48);z-index:20;align-items:center;justify-content:center}.modal.show{display:flex}.modalbox{background:#fff;width:min(1000px,94vw);max-height:90vh;overflow:auto;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.25)}.modalhead{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.close{cursor:pointer;font-size:22px;color:#64748b}.modalbody{padding:20px}
+.toast{position:fixed;right:24px;bottom:24px;background:#172033;color:#fff;padding:12px 16px;border-radius:8px;display:none;font-size:12px;z-index:50}.toast.show{display:block}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.modulegrid{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+
+.breadcrumb{font-size:11px;color:#7b8494;margin-bottom:8px}.page-actions{display:flex;gap:7px;align-items:center}
+.statusbar{display:flex;align-items:center;gap:0;margin:15px 0 18px}.statusstep{padding:8px 15px;background:#f3f4f6;color:#667085;font-size:10px;border-right:1px solid #fff}.statusstep:first-child{border-radius:7px 0 0 7px}.statusstep:last-child{border-radius:0 7px 7px 0}.statusstep.done{background:#e0e7ff;color:#3730a3}.statusstep.current{background:#4f46e5;color:#fff;font-weight:700}
+.recordlayout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px}.chatter{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.chatterhead{padding:13px 15px;border-bottom:1px solid var(--line);font-size:12px;font-weight:700}.message{padding:12px 15px;border-bottom:1px solid #f0f1f3;font-size:11px}.message small{color:#8a93a2;display:block;margin-top:3px}.activity{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px;margin:10px 0;font-size:11px}.activity strong{display:block;margin-bottom:3px}.activity span{color:#6b7280}
+.statstrip{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:16px;overflow:hidden}.statbox{padding:12px 14px;border-right:1px solid var(--line)}.statbox:last-child{border-right:0}.statbox label{font-size:9px;text-transform:uppercase;color:#7b8494;display:block}.statbox b{font-size:17px;display:block;margin-top:4px}
+.viewtabs{display:flex;border-bottom:1px solid var(--line);background:#fff}.viewtab{padding:10px 14px;font-size:11px;color:#667085;cursor:pointer;border-bottom:2px solid transparent}.viewtab.active{color:#4338ca;border-bottom-color:#4f46e5;font-weight:700}
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kanbancol{background:#eef1f6;border-radius:9px;padding:9px;min-height:250px}.kanbanhead{font-size:11px;font-weight:800;margin:3px 4px 9px}.kanbanitem{background:#fff;border:1px solid #e2e5ea;border-radius:8px;padding:11px;margin-bottom:8px;box-shadow:0 2px 5px #0000000a;font-size:11px;cursor:pointer}.kanbanitem:hover{border-color:#c7d2fe}.kanbanitem b{display:block;margin-bottom:5px}.kanbanmeta{font-size:9px;color:#7b8494;margin-top:7px}
+@media(max-width:900px){.recordlayout{grid-template-columns:1fr}.kanban{grid-template-columns:1fr 1fr}.statstrip{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand">AUTONOVA <span>ONE</span><div class="subbrand">AUTONOMOUS OPERATIONS ERP</div></div>
+ <div class="navgroup">Workspace</div>
+ <div class="navitem active" onclick="show('dashboard',this)">⌂ Dashboard</div>
+ <div class="navitem" onclick="show('missions',this)">◎ Mission Planning</div>
+ <div class="navitem" onclick="show('fleet',this)">◈ Fleet Assets</div>
+ <div class="navitem" onclick="show('map',this)">⌖ Control Tower</div>
+ <div class="navgroup">Operations</div>
+ <div class="navitem" onclick="show('workorders',this)">▣ Work Orders</div>
+ <div class="navitem" onclick="show('maintenance',this)">⚙ Maintenance</div>
+ <div class="navitem" onclick="show('battery',this)">▰ Battery & Energy</div>
+ <div class="navitem" onclick="show('incidents',this)">⚠ Incidents & Safety</div>
+ <div class="navitem" onclick="show('inventory',this)">□ Parts & Inventory</div>
+ <div class="navgroup">Commercial</div>
+ <div class="navitem" onclick="show('sales',this)">◇ Sales & Contracts</div>
+ <div class="navitem" onclick="show('billing',this)">₹ Service Billing</div>
+ <div class="navitem" onclick="show('procurement',this)">⇩ Procurement</div>
+ <div class="navgroup">People & Control</div>
+ <div class="navitem" onclick="show('people',this)">♙ People & Competency</div>
+ <div class="navitem" onclick="show('compliance',this)">✓ Compliance</div>
+ <div class="navitem" onclick="show('reports',this)">▤ Reports</div>
+ <div class="navitem" onclick="show('setup',this)">⚙ Configuration</div>
+</aside>
+
+<main class="main">
+<header class="topbar"><input class="search" placeholder="Search missions, robots, customers, serial numbers..." onkeyup="globalSearch(this.value)"><div class="user"><span style="color:#6b7280">Autonova Operations Pvt Ltd · Bengaluru DC</span><span class="badge b-green">System Online</span><div class="avatar">OM</div></div></header>
+<section class="content" id="content"></section>
+</main>
+</div>
+<div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><strong id="modalTitle">Record</strong><span class="close" onclick="closeModal()">×</span></div><div class="modalbody" id="modalBody"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const modules=[
+ ['fleet','🤖','Fleet Assets','Assets, robot classes, capabilities, locations, status, utilization','48 Assets'],
+ ['missions','🎯','Mission Planning','Mission orders, assignment, execution, routing, results','126 Missions'],
+ ['workorders','📋','Work Orders','Operational tasks generated from missions and contracts','34 Open'],
+ ['maintenance','🔧','Maintenance','Preventive, corrective, predictive service lifecycle','11 Due'],
+ ['battery','🔋','Battery & Energy','Battery packs, cycles, charging, health and energy cost','19 Alerts'],
+ ['incidents','⚠️','Incidents & Safety','Failures, near misses, safety events, RCA and CAPA','7 Open'],
+ ['inventory','📦','Parts & Inventory','Spare parts, serials, batches, warehouses, replenishment','1,842 SKUs'],
+ ['sales','💼','Sales & Contracts','Customers, quotations, contracts, SLAs and service plans','23 Active'],
+ ['billing','💳','Service Billing','Billable missions, usage, subscriptions and revenue','₹18.6L'],
+ ['procurement','🛒','Procurement','Vendors, RFQs, POs, receipts and asset procurement','16 Open'],
+ ['people','👷','People & Competency','Operators, engineers, skills, training, certifications','39 Active'],
+ ['compliance','🛡️','Compliance','Risk, permits, checklists, audit evidence, policies','92% Ready']
+];
+
+const robots=[
+ {id:'AMR-041',type:'Warehouse AMR',site:'Bengaluru DC',status:'Mission',battery:87,util:92,mission:'MIS-2026-0148',health:'Good'},
+ {id:'AMR-038',type:'Forklift AMR',site:'Bengaluru DC',status:'Mission',battery:54,util:84,mission:'MIS-2026-0147',health:'Good'},
+ {id:'DRN-009',type:'Inspection Drone',site:'Hosur Plant',status:'Charging',battery:24,util:68,mission:'MIS-2026-0141',health:'Attention'},
+ {id:'DRN-011',type:'Inspection Drone',site:'Chennai Plant',status:'Available',battery:96,util:73,mission:'—',health:'Good'},
+ {id:'AGR-021',type:'Agricultural Robot',site:'Mysuru Farm',status:'Maintenance',battery:31,util:51,mission:'MIS-2026-0138',health:'Critical'},
+ {id:'SEC-006',type:'Security Robot',site:'Bengaluru DC',status:'Patrol',battery:72,util:88,mission:'MIS-2026-0149',health:'Good'}
+];
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function badge(s){let c=s==='Good'||s==='Available'||s==='Completed'||s==='Approved'||s==='Mission'?'b-green':s==='Critical'||s==='Blocked'?'b-red':s==='Attention'||s==='Charging'?'b-orange':'b-blue';return `<span class="badge ${c}">${s}</span>`}
+function shell(title,sub,actions=''){return `<div class="pagehead"><div><h1>${title}</h1><div class="subtitle">${sub}</div></div><div>${actions}</div></div>`}
+
+function dashboard(){
+ return shell('Autonomous Operations','Single ERP view for assets, missions, commercial operations, maintenance and economics.',
+ `<button class="btn" onclick="openCreate('Mission Order')">+ Mission Order</button><button class="btn primary" onclick="openCreate('Autonomous Asset')">+ Register Asset</button>`)
+ +`<div class="kpis">
+ ${kpi('Autonomous Assets','248','↑ 12 this quarter','')}
+ ${kpi('Active Missions','37','94.2% SLA','')}
+ ${kpi('Fleet Utilisation','78.6%','↑ 4.8% vs last month','')}
+ ${kpi('Mission Revenue','₹18.6L','↑ 11.2% MTD','')}
+ ${kpi('Maintenance Due','11','3 critical','')}
+ ${kpi('Energy Cost','₹2.84L','↓ 6.1% MTD','')}
+ </div>
+ <div class="grid">
+ <div class="card"><div class="cardhead"><strong>Live Mission Queue</strong><button class="btn" onclick="show('missions')">Open Mission Planning</button></div><div class="cardbody">
+ <table><thead><tr><th>Mission</th><th>Customer / Site</th><th>Asset</th><th>Purpose</th><th>Status</th><th>SLA</th></tr></thead><tbody>
+ ${['MIS-2026-0149|ABC Logistics|SEC-006|Night perimeter patrol|Mission|On Track','MIS-2026-0148|ABC Logistics|AMR-041|Pallet transfer|Mission|On Track','MIS-2026-0147|ABC Logistics|AMR-038|Inbound replenishment|Mission|At Risk','MIS-2026-0141|Naveen Industries|DRN-009|Roof inspection|Charging|On Track','MIS-2026-0138|GreenGrow Farms|AGR-021|Crop health scan|Blocked|Breached'].map(x=>{let a=x.split('|');return `<tr class="clickable" onclick="openMission('${a[0]}')"><td><b>${a[0]}</b></td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td>${badge(a[4])}</td><td>${badge(a[5])}</td></tr>`}).join('')}
+ </tbody></table></div></div>
+ <div class="card"><div class="cardhead"><strong>Fleet Health</strong><span class="badge b-blue">248 Total</span></div><div class="cardbody">
+ ${['Available|84|34%','Mission|96|39%','Charging|31|12%','Maintenance|18|7%','Offline|19|8%'].map(x=>{let a=x.split('|');return `<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px"><span>${a[0]}</span><b>${a[1]}</b></div><div class="progress"><i style="width:${a[2]}"></i></div></div>`}).join('')}
+ <div class="section">Critical Alerts</div>
+ <div class="alert red"><strong>3 assets predicted failure</strong>AGR-021, AMR-052 and DRN-009 require review.</div>
+ <div class="alert orange"><strong>8 batteries below health threshold</strong>Replacement planning recommended.</div>
+ </div></div></div>
+ <div class="grid" style="margin-top:16px">
+ <div class="card"><div class="cardhead"><strong>Mission Throughput — Last 7 Days</strong><span class="subtitle">Completed missions</span></div><div class="cardbody"><div class="chart">${[54,66,49,81,73,92,88].map((v,i)=>`<div class="bar" style="height:${v}%"><span>${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}</span></div>`).join('')}</div></div></div>
+ <div class="card"><div class="cardhead"><strong>Management Exceptions</strong></div><div class="cardbody">
+ <div class="alert red"><strong>₹3.2L revenue at risk</strong>7 missions are outside customer SLA.</div>
+ <div class="alert orange"><strong>Charging bottleneck</strong>4 AMRs waiting for shared chargers at Bengaluru DC.</div>
+ <div class="alert blue"><strong>New contract</strong>XYZ Cement — 120 inspection missions/month.</div>
+ </div></div></div>`;
+}
+function kpi(l,v,t){return `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="trend">${t}</div></div>`}
+
+function fleet(){
+ return shell('Fleet Assets','Unified asset registry — robots, drones, vehicles, batteries and autonomous equipment.',
+ `<button class="btn" onclick="toast('Import template opened')">Import</button><button class="btn primary" onclick="openCreate('Autonomous Asset')">+ New Asset</button>`)
+ + `<div class="toolbar"><input class="filter" placeholder="Search asset ID..." onkeyup="filterTable(this.value,'fleetTable')"><select class="filter"><option>All Types</option><option>AMR</option><option>Drone</option><option>Security</option></select><select class="filter"><option>All Sites</option><option>Bengaluru DC</option><option>Hosur Plant</option></select><span class="spacer"></span><button class="btn">Export</button></div>
+ <div class="card"><table id="fleetTable"><thead><tr><th>Asset</th><th>Class</th><th>Site</th><th>Status</th><th>Battery</th><th>Utilisation</th><th>Health</th><th></th></tr></thead><tbody>
+ ${robots.map(r=>`<tr class="clickable"><td><b>${r.id}</b></td><td>${r.type}</td><td>${r.site}</td><td>${badge(r.status)}</td><td><div style="width:80px"><div class="progress"><i style="width:${r.battery}%"></i></div></div><small>${r.battery}%</small></td><td>${r.util}%</td><td>${badge(r.health)}</td><td><button class="btn" onclick="openAsset('${r.id}')">Open</button></td></tr>`).join('')}
+ </tbody></table></div>`;
+}
+
+
+function missionPlanningPro(){
+ return shell('Mission Planning','Plan demand, allocate autonomous capacity, execute service commitments and close missions.',
+ `<button class="btn">Saved Filters</button><button class="btn">Export</button><button class="btn primary" onclick="openCreate('Mission Order')">+ New Mission</button>`)
+ +`<div class="statstrip">
+ <div class="statbox"><label>Unplanned Demand</label><b>12</b></div><div class="statbox"><label>Ready to Dispatch</label><b>8</b></div>
+ <div class="statbox"><label>In Execution</label><b>37</b></div><div class="statbox"><label>At SLA Risk</label><b style="color:#dc2626">7</b></div>
+ <div class="statbox"><label>Today's Billable Value</label><b>₹6.84L</b></div></div>
+ <div class="viewtabs"><div class="viewtab active">Kanban</div><div class="viewtab">List</div><div class="viewtab">Calendar</div><div class="viewtab">Gantt</div></div>
+ <div class="kanban">${[
+ ['Demand',[['MIS-2026-0152','ABC Logistics','Pallet movement','Normal'],['MIS-2026-0153','Naveen Industries','Roof inspection','High'],['MIS-2026-0154','GreenGrow Farms','Crop scan','Normal']]],
+ ['Ready',[['MIS-2026-0150','XYZ Cement','Conveyor inspection','High'],['MIS-2026-0149','ABC Logistics','Security patrol','High']]],
+ ['Executing',[['MIS-2026-0148','ABC Logistics','Pallet transfer','Normal'],['MIS-2026-0147','ABC Logistics','Inbound replenishment','High'],['MIS-2026-0141','Naveen Industries','Roof inspection','Normal']]],
+ ['Close / Review',[['MIS-2026-0139','XYZ Cement','Thermal inspection','Normal'],['MIS-2026-0138','GreenGrow Farms','Crop health scan','Normal']]]
+ ].map(col=>`<div class="kanbancol"><div class="kanbanhead">${col[0]} <span style="float:right;color:#7b8494">${col[1].length}</span></div>${col[1].map(x=>`<div class="kanbanitem" onclick="openMission('${x[0]}')"><b>${x[0]}</b>${x[1]}<br>${x[2]}<div class="kanbanmeta">${badge(x[3])} · Customer SLA tracked</div></div>`).join('')}</div>`).join('')}</div>`;
+}
+
+function missions(){
+ return shell('Mission Planning','Plan, approve, dispatch, execute and close autonomous missions.',
+ `<button class="btn" onclick="toast('Dispatch board refreshed')">↻ Refresh</button><button class="btn primary" onclick="openCreate('Mission Order')">+ Mission Order</button>`)
+ + `<div class="kpis">${kpi('Draft','12','Awaiting planning','')}${kpi('Ready','8','Ready to dispatch','')}${kpi('Running','37','Live now','')}${kpi('At Risk','7','Needs attention','')}${kpi('Completed','412','This month','')}${kpi('Billed','₹18.6L','This month','')}</div>
+ <div class="card"><div class="cardhead"><strong>Mission Orders</strong><div><button class="btn">My Missions</button><button class="btn">All Sites</button></div></div><div class="cardbody"><table><thead><tr><th>Mission</th><th>Customer</th><th>Mission Type</th><th>Asset</th><th>Priority</th><th>Start</th><th>Status</th><th></th></tr></thead><tbody>
+ ${['MIS-2026-0149|ABC Logistics|Security Patrol|SEC-006|High|30-Sep 22:00|Mission','MIS-2026-0148|ABC Logistics|Pallet Transfer|AMR-041|Normal|30-Sep 15:30|Mission','MIS-2026-0147|ABC Logistics|Inbound Replenishment|AMR-038|High|30-Sep 15:15|At Risk','MIS-2026-0141|Naveen Industries|Roof Inspection|DRN-009|Normal|30-Sep 14:00|Charging','MIS-2026-0138|GreenGrow Farms|Crop Health Scan|AGR-021|Normal|30-Sep 09:00|Blocked'].map(x=>{let a=x.split('|');return `<tr><td><b>${a[0]}</b></td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td>${badge(a[4])}</td><td>${a[5]}</td><td>${badge(a[6])}</td><td><button class="btn" onclick="openMission('${a[0]}')">Open</button></td></tr>`}).join('')}
+ </tbody></table></div></div>`;
+}
+
+
+function professionalAsset(id){
+ let r=robots.find(x=>x.id===id)||robots[0];
+ return `<div class="breadcrumb">Fleet Assets / Autonomous Asset / ${r.id}</div>`
+ +shell(`${r.id} · ${r.type}`,`${r.site} · Asset Master`,
+ `<button class="btn">Print</button><button class="btn">Action ▾</button><button class="btn primary" onclick="toast('Maintenance work order created')">Create Work Order</button>`)
+ +`<div class="statusbar"><span class="statusstep done">Registered</span><span class="statusstep done">Commissioned</span><span class="statusstep current">${r.status}</span><span class="statusstep">Maintenance</span><span class="statusstep">Retired</span></div>
+ <div class="smartbuttons"><div class="smart"><b>12</b> Missions</div><div class="smart"><b>8</b> Work Orders</div><div class="smart"><b>4</b> Incidents</div><div class="smart"><b>3</b> Batteries</div><div class="smart"><b>₹6.4L</b> Revenue</div><div class="smart"><b>₹1.1L</b> Cost</div></div>
+ <div class="recordlayout"><div class="card"><div class="cardbody">
+ <div class="section">Asset Identity</div><div class="formgrid">${field('Asset ID',r.id)}${field('Asset Class',r.type)}${field('Manufacturer','Autonova Robotics')}${field('Model','AR-X4')}${field('Serial Number','AUTO-'+r.id+'-2026')}${field('Company','Autonova Operations Pvt Ltd')}</div>
+ <div class="section">Operational Configuration</div><div class="formgrid">${field('Operating Site',r.site)}${field('Zone','Zone A')}${field('Autonomy Level','L4 — Supervised')}${field('Payload Capacity','250 kg')}${field('Navigation','LiDAR + SLAM')}${field('Communication','Wi-Fi / 5G')}</div>
+ <div class="section">Financial & Lifecycle</div><div class="formgrid">${field('Acquisition Cost','₹18,50,000')}${field('Commissioned','14-Feb-2026')}${field('Warranty End','13-Feb-2028')}${field('Current Book Value','₹15,82,000')}${field('Accumulated Cost','₹3,74,000')}${field('Cost Centre','AUTONOMOUS-OPS')}</div>
+ <div class="section">Operational History</div><div class="timeline"><div class="event"><strong>30-Sep-2026 · ${r.mission} assigned</strong><span>Capability, location and readiness rules matched.</span></div><div class="event"><strong>28-Sep-2026 · Preventive maintenance completed</strong><span>Robotics Engineering checklist approved.</span></div><div class="event"><strong>15-Sep-2026 · Battery BAT-1182 replaced</strong><span>Battery lifecycle transaction posted.</span></div></div>
+ </div></div><div><div class="chatter"><div class="chatterhead">Activities & Chatter</div><div style="padding:10px 15px"><button class="btn">Schedule Activity</button><button class="btn">Log Note</button></div>
+ <div class="message"><b>Fleet Manager</b><small>30 Sep · 14:52</small>Asset cleared for today's mission.</div><div class="message"><b>Maintenance</b><small>28 Sep · 18:21</small>Preventive checklist completed.</div><div class="message"><b>System</b><small>15 Sep · 09:14</small>Battery lifecycle updated.</div></div>
+ <div class="card" style="margin-top:14px"><div class="cardhead"><strong>Readiness</strong></div><div class="cardbody"><div class="activity"><strong>Mission Ready</strong><span>Capability ✓ · Battery ✓ · Permit ✓ · Maintenance ✓</span></div><div class="activity"><strong>Unit Economics</strong><span>Revenue ₹6.4L · Direct cost ₹1.1L · Contribution ₹5.3L</span></div></div></div></div></div>`;
+}
+
+function detailAsset(id){
+ let r=robots.find(x=>x.id===id)||robots[0];
+ return shell(`${r.id} — ${r.type}`,`${r.site} · Autonomous Asset`,
+ `<button class="btn">Edit</button><button class="btn primary" onclick="toast('Maintenance Work Order created')">Create Maintenance</button>`)
+ +`<div class="smartbuttons">
+ <div class="smart"><b>12</b> Missions</div><div class="smart"><b>8</b> Work Orders</div><div class="smart"><b>4</b> Incidents</div><div class="smart"><b>3</b> Batteries</div><div class="smart"><b>₹6.4L</b> Revenue</div><div class="smart"><b>₹1.1L</b> Cost</div>
+ </div>
+ <div class="card"><div class="cardbody">
+ <div class="formgrid">
+ ${field('Asset ID',r.id)}${field('Asset Class',r.type)}${field('Site',r.site)}${field('Status',r.status)}${field('Battery Health',r.battery+'%')} ${field('Utilisation',r.util+'%')}${field('Health State',r.health)}${field('Serial Number','AUTO-'+r.id+'-2026')}${field('Commissioned','14-Feb-2026')}
+ </div>
+ <div class="section">Capabilities</div><div class="formgrid">${field('Payload Capacity','250 kg')}${field('Navigation','LiDAR + SLAM')}${field('Communication','Wi-Fi / 5G')}${field('Autonomy Level','L4 — supervised')}</div>
+ <div class="section">Current Mission</div><div class="alert blue"><strong>${r.mission}</strong>Asset assigned to current operational mission. <button class="btn" onclick="openMission('${r.mission}')">Open Mission</button></div>
+ <div class="section">Lifecycle</div><div class="timeline">
+ <div class="event"><strong>30-Sep-2026 · Mission assigned</strong><span>${r.mission}</span></div>
+ <div class="event"><strong>28-Sep-2026 · Preventive maintenance completed</strong><span>Wheel inspection, LiDAR cleaning and firmware validation</span></div>
+ <div class="event"><strong>15-Sep-2026 · Battery replaced</strong><span>BAT-1182 installed</span></div>
+ <div class="event"><strong>14-Feb-2026 · Asset commissioned</strong><span>Commissioning checklist approved</span></div>
+ </div></div></div>`;
+}
+function field(l,v){return `<div class="field"><label>${l}</label><input value="${v}" readonly></div>`}
+
+function missionDetail(id){
+ let m=id==='MIS-2026-0138'?{customer:'GreenGrow Farms',type:'Crop Health Scan',asset:'AGR-021',status:'Blocked',site:'Mysuru Farm'}:
+ id==='MIS-2026-0141'?{customer:'Naveen Industries',type:'Roof Inspection',asset:'DRN-009',status:'Charging',site:'Hosur Plant'}:
+ {customer:'ABC Logistics',type:id==='MIS-2026-0147'?'Inbound Replenishment':id==='MIS-2026-0148'?'Pallet Transfer':'Security Patrol',asset:id==='MIS-2026-0147'?'AMR-038':id==='MIS-2026-0148'?'AMR-041':'SEC-006',status:'Mission',site:'Bengaluru DC'};
+ return shell(`${id} — Mission Order`,`${m.customer} · ${m.type}`,
+ `<button class="btn">Edit</button><button class="btn" onclick="toast('Checklist opened')">Pre-Mission Checklist</button><button class="btn primary" onclick="toast('Mission dispatched')">Dispatch</button>`)
+ +`<div class="smartbuttons"><div class="smart"><b>1</b> Asset</div><div class="smart"><b>3</b> Work Orders</div><div class="smart"><b>2</b> Incidents</div><div class="smart"><b>6</b> Evidence</div><div class="smart"><b>₹42K</b> Estimated Bill</div><div class="smart"><b>1</b> Invoice</div></div>
+ <div class="card"><div class="cardbody"><div class="formgrid">${field('Mission No',id)}${field('Customer',m.customer)}${field('Mission Type',m.type)}${field('Site',m.site)}${field('Assigned Asset',m.asset)}${field('Priority','High')}${field('Planned Start','30-Sep-2026 15:30')}${field('Expected End','30-Sep-2026 18:00')}${field('SLA','4 Hours')}${field('Status',m.status)}${field('Supervisor','Arun Kumar')}${field('Billable','Yes')}</div>
+ <div class="section">Mission Workflow</div><div style="display:flex;gap:7px;flex-wrap:wrap">${['Draft','Planned','Safety Checked','Approved','Dispatched','Executing','Completed','Billed'].map((x,i)=>`<span class="badge ${x===m.status?'b-orange':i<4?'b-green':'b-gray'}">${x}</span>`).join(' → ')}</div>
+ <div class="section">Execution Summary</div><div class="grid"><div><div class="alert blue"><strong>Live telemetry</strong>Battery 68% · Distance 4.2 km · Payload 18 kg · Route deviation 0.4%</div><div class="alert orange"><strong>AI finding</strong>One anomaly detected. Human verification required before closure.</div></div><div><div class="timeline"><div class="event"><strong>15:32 · Asset dispatched</strong><span>Route validated and mission started.</span></div><div class="event"><strong>16:18 · Checkpoint 3</strong><span>Sensor package uploaded.</span></div><div class="event"><strong>16:44 · Anomaly</strong><span>Automatic incident created.</span></div></div></div></div>
+ </div></div>`;
+}
+
+function simpleList(type){
+ const data={
+ workorders:['WO-2026-0921|Mission Maintenance|AMR-052|Critical|Open','WO-2026-0918|Pre-flight Inspection|DRN-009|Normal|Open','WO-2026-0911|Battery Replacement|AGR-021|High|Open','WO-2026-0904|Wheel Assembly|AMR-038|Normal|Completed'],
+ maintenance:['PM-2026-0412|AMR-052|Predictive|30-Sep|Critical','PM-2026-0411|DRN-009|Preventive|01-Oct|High','PM-2026-0407|AGR-021|Corrective|01-Oct|High'],
+ battery:['BAT-1182|AMR-041|Li-Ion 48V|91%|412 cycles|Good','BAT-1194|AMR-038|Li-Ion 48V|76%|628 cycles|Attention','BAT-1211|DRN-009|Li-Po|68%|302 cycles|Attention','BAT-1202|AGR-021|Li-Ion 72V|42%|911 cycles|Critical'],
+ incidents:['INC-2026-044|AGR-021|Battery thermal anomaly|Critical|Open','INC-2026-043|AMR-052|Navigation deviation|High|Investigating','INC-2026-041|DRN-009|Sensor obstruction|Medium|Resolved'],
+ inventory:['SP-00421|LiDAR Lens|Critical Spare|42|Bengaluru DC|Available','SP-00182|Wheel Assembly|Critical Spare|16|Bengaluru DC|Low Stock','SP-00811|48V Battery Pack|Serialised|8|Hosur Plant|Available'],
+ procurement:['PO-2026-0188|RoboParts India|Battery Pack|₹4.8L|30-Sep|Open','PO-2026-0184|VisionTech|Thermal Camera|₹2.2L|29-Sep|Received','PO-2026-0179|AMR Systems|Wheel Assembly|₹1.1L|28-Sep|Open'],
+ people:['OP-0042|Arun Kumar|Mission Supervisor|12|Valid','OP-0038|Meena Rao|Drone Pilot|8|Valid','ENG-0021|Vikram Shah|Robotics Engineer|21|Renewal Due'],
+ compliance:['CMP-2026-102|Hosur Plant|Drone Flight Permit|30-Sep|Ready','CMP-2026-098|Bengaluru DC|Safety Audit|02-Oct|Due','CMP-2026-091|Mysuru Farm|Agricultural Robot Permit|01-Oct|Ready'],
+ sales:['C-0012|ABC Logistics|Autonomous Warehouse Contract|₹48L/year|Active','C-0028|Naveen Industries|Inspection Services|₹24L/year|Active','C-0031|GreenGrow Farms|Crop Monitoring|₹12L/year|Renewal'],
+ billing:['INV-2026-0811|ABC Logistics|Mission Services|₹4.2L|Pending','INV-2026-0804|Naveen Industries|Inspection Missions|₹1.8L|Paid','INV-2026-0792|GreenGrow Farms|Crop Monitoring|₹92K|Overdue']
+ }[type] || [];
+ let labels={workorders:['Work Order','Type','Asset','Priority','Status'],maintenance:['Plan','Asset','Type','Due','Priority'],battery:['Battery','Asset','Type','Health','Cycles','Status'],incidents:['Incident','Asset','Event','Severity','Status'],inventory:['Item','Description','Class','Qty','Warehouse','Status'],procurement:['PO','Supplier','Item','Amount','Date','Status'],people:['Person','Name','Role','Skills','Certification'],compliance:['Record','Site','Control','Due','Status'],sales:['Customer','Name','Contract','Value','Status'],billing:['Invoice','Customer','Type','Amount','Status']}[type]||[];
+ return shell(labels[0]||type.charAt(0).toUpperCase()+type.slice(1), 'Operational records linked to the autonomous ERP lifecycle.',
+ `<button class="btn" onclick="toast('Export prepared')">Export</button><button class="btn primary" onclick="openCreate('${labels[0]||type}')">+ New</button>`)
+ +`<div class="card"><table><thead><tr>${labels.map(l=>`<th>${l}</th>`).join('')}<th></th></tr></thead><tbody>${data.map(row=>{let a=row.split('|');return `<tr>${a.map((v,i)=>`<td>${i===0?'<b>'+v+'</b>':(i===a.length-1?badge(v):v)}</td>`).join('')}<td><button class="btn" onclick="toast('Record opened')">Open</button></td></tr>`}).join('')}</tbody></table></div>`;
+}
+
+function setup(){
+ return shell('Configuration','Configuration layer for multi-company, multi-site autonomous operations.',
+ `<button class="btn primary" onclick="openCreate('Master Record')">+ New Master</button>`)
+ +`<div class="modulegrid">${[
+ ['🏢','Company & Sites','Companies, operating sites, zones, warehouses, charging stations'],
+ ['🤖','Asset Classes','AMR, AGV, drone, agricultural, security, delivery, custom'],
+ ['🧩','Capabilities','Payloads, sensors, navigation, autonomy level, operating constraints'],
+ ['📋','Mission Types','Inspection, transfer, patrol, delivery, crop scan, mapping'],
+ ['🔋','Energy Masters','Battery types, chargers, tariff slabs, energy policies'],
+ ['🔧','Maintenance Masters','Maintenance plans, checklists, service packages, failure codes'],
+ ['💰','Billing Rules','Per mission, per hour, per km, subscription, SLA penalties'],
+ ['🛡️','Safety & Compliance','Risk types, permits, policies, checklists, approval matrices'],
+ ['👥','Roles & Access','Operations, fleet manager, engineer, finance, customer portal'],
+ ['🔌','Integrations','WMS, ERP, IoT gateway, GPS, telemetry, robot APIs'],
+ ['📊','KPI Definitions','Utilisation, uptime, mission success, cost, revenue, energy'],
+ ['🧠','AI Policies','Detection thresholds, approval gates, human-in-loop rules']
+].map(m=>`<div class="module"><div class="ico">${m[0]}</div><h3>${m[1]}</h3><p>${m[2]}</p><div class="count">Configure →</div></div>`).join('')}</div>`;
+}
+
+function mapview(){
+ return shell('Control Tower','Site map and real-time operational state — prototype telemetry view.',
+ `<button class="btn" onclick="toast('Telemetry synchronized')">↻ Sync</button><button class="btn primary" onclick="toast('Dispatch console opened')">Dispatch</button>`)
+ +`<div class="grid"><div class="card"><div class="cardbody" style="height:520px;background:radial-gradient(circle at 30% 30%,#e0e7ff 0 2px,transparent 3px),linear-gradient(135deg,#eef2ff,#f8fafc);position:relative;overflow:hidden">
+ <div style="position:absolute;inset:70px 50px;border:2px dashed #c7d2fe;border-radius:20px"></div>
+ ${[['AMR-041','22%','30%','Mission'],['AMR-038','58%','36%','Mission'],['SEC-006','71%','70%','Patrol'],['DRN-009','39%','75%','Charging'],['AMR-052','78%','20%','Maintenance']].map(x=>`<div onclick="openAsset('${x[0]}')" style="position:absolute;left:${x[1]};top:${x[2]};background:white;border:2px solid #6366f1;border-radius:10px;padding:7px;box-shadow:0 4px 14px #0002;cursor:pointer;font-size:10px"><b>${x[0]}</b><br>${x[3]}</div>`).join('')}
+ <div style="position:absolute;left:20px;top:20px;background:#fff;padding:10px;border-radius:8px;font-size:11px;box-shadow:var(--shadow)"><b>Bengaluru Distribution Centre</b><br>Zone A · Zone B · Dock 4 · Charging Hub</div>
+ </div></div>
+ <div class="card"><div class="cardhead"><strong>Event Stream</strong></div><div class="cardbody">${['AMR-041 completed pallet transfer','AMR-038 battery below mission threshold','SEC-006 started patrol route','DRN-009 returned to charging dock','AMR-052 generated maintenance alert'].map((e,i)=>`<div class="event"><strong>${e}</strong><span>${i+1} min ago · system event</span></div>`).join('')}</div></div></div>`;
+}
+
+function reports(){
+ return shell('Reports & Analytics','Operational, financial and lifecycle analytics.',
+ `<button class="btn">Schedule Report</button><button class="btn primary" onclick="toast('Dashboard exported')">Export</button>`)
+ +`<div class="modulegrid">${[
+ ['📈','Fleet Utilisation','Asset availability, mission hours, idle hours, utilisation by site'],
+ ['🎯','Mission Performance','Success rate, SLA, duration, route efficiency, outcomes'],
+ ['💸','Mission Profitability','Revenue, energy, maintenance, labour and contribution'],
+ ['🔋','Energy Analytics','kWh, charging time, battery degradation and cost per mission'],
+ ['🔧','Maintenance Cost','Preventive vs corrective, downtime and asset lifecycle cost'],
+ ['⚠️','Incident Analytics','Failure trends, severity, RCA, recurring incidents'],
+ ['📦','Spare Parts Consumption','Parts demand, stockout risk and consumption per asset'],
+ ['💼','Customer Contract Performance','SLA, missions, revenue, penalties and renewals'],
+ ['🤖','Asset ROI','Acquisition cost, utilisation, revenue and payback'],
+ ['🧠','AI Decision Audit','AI alerts, human approvals, actions and outcomes'],
+ ['🏭','Site Productivity','Throughput, bottlenecks, charger utilisation and fleet balance'],
+ ['💰','Management P&L','Revenue, direct cost, overhead allocation and margin']
+].map(m=>`<div class="module" onclick="toast('${m[1]} report opened')"><div class="ico">${m[0]}</div><h3>${m[1]}</h3><p>${m[2]}</p><div class="count">View report →</div></div>`).join('')}</div>`;
+}
+
+function fieldCreate(label,val=''){return `<div class="field"><label>${label}</label><input placeholder="${label}" value="${val}"></div>`}
+function openCreate(type){
+ let body=`<div class="formgrid">`;
+ if(type==='Mission Order') body+=fieldCreate('Mission No','MIS-2026-0150')+fieldCreate('Customer','')+fieldCreate('Mission Type','Inspection')+fieldCreate('Site','')+fieldCreate('Required Capability','Thermal Inspection')+fieldCreate('Priority','Normal')+fieldCreate('Planned Start','30-Sep-2026 18:00')+fieldCreate('Expected End','30-Sep-2026 20:00')+fieldCreate('SLA','4 Hours')+fieldCreate('Billing Rule','Per Mission')+fieldCreate('Supervisor','')+fieldCreate('Approval','Pending');
+ else if(type==='Autonomous Asset') body+=fieldCreate('Asset ID','AUTO-2026-')+fieldCreate('Asset Class','Warehouse AMR')+fieldCreate('Manufacturer','')+fieldCreate('Model','')+fieldCreate('Serial Number','')+fieldCreate('Site','Bengaluru DC')+fieldCreate('Commission Date','')+fieldCreate('Battery Type','Li-Ion 48V')+fieldCreate('Autonomy Level','L4 — Supervised')+fieldCreate('Payload Capacity','')+fieldCreate('Current Status','Available')+fieldCreate('Warranty End','');
+ else body+=fieldCreate('Code','NEW-001')+fieldCreate('Name','')+fieldCreate('Status','Draft')+fieldCreate('Company','Autonova Operations Pvt Ltd')+fieldCreate('Effective Date','30-Sep-2026');
+ body+=`</div><div class="section">Notes</div><textarea style="width:100%;border:1px solid #dbe1e8;border-radius:7px;padding:9px" placeholder="Operational notes..."></textarea>
+ <div style="margin-top:18px;text-align:right"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveRecord('${type}')">Save & Submit</button></div>`;
+ document.getElementById('modalTitle').textContent='New '+type;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').classList.add('show');
+}
+function saveRecord(type){closeModal();toast(type+' saved successfully');}
+function openAsset(id){document.getElementById('content').innerHTML=professionalAsset(id);window.scrollTo(0,0)}
+function openMission(id){document.getElementById('content').innerHTML=missionDetail(id);window.scrollTo(0,0)}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function toast(t){let x=document.getElementById('toast');x.textContent='✓ '+t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2400)}
+function filterTable(q,id){let rows=document.querySelectorAll('#'+id+' tbody tr');rows.forEach(r=>r.style.display=r.innerText.toLowerCase().includes(q.toLowerCase())?'':'none')}
+function globalSearch(q){if(q.length>2){let all=[...robots.map(r=>r.id), 'MIS-2026-0149','MIS-2026-0148','MIS-2026-0147'];let hit=all.find(x=>x.toLowerCase().includes(q.toLowerCase()));if(hit)toast('Found: '+hit)}}
+function show(page,el){
+ if(el){document.querySelectorAll('.navitem').forEach(x=>x.classList.remove('active'));el.classList.add('active')}
+ const map={dashboard:dashboard, fleet:fleet, missions:missionPlanningPro, map:mapview, reports:reports, setup:setup,
+ workorders:()=>simpleList('workorders'),maintenance:()=>simpleList('maintenance'),battery:()=>simpleList('battery'),incidents:()=>simpleList('incidents'),inventory:()=>simpleList('inventory'),procurement:()=>simpleList('procurement'),people:()=>simpleList('people'),compliance:()=>simpleList('compliance'),sales:()=>simpleList('sales'),billing:()=>simpleList('billing')};
+ document.getElementById('content').innerHTML=(map[page]||dashboard)();window.scrollTo(0,0);
+}
+show('dashboard');
+</script>
+</body>
+</html>
